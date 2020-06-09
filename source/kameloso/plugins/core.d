@@ -327,9 +327,9 @@ mixin template IRCPluginImpl(Flag!"debug_" debug_ = No.debug_,
      +  etc; where such is applicable.
      +
      +  Params:
-     +      origEvent = Parsed `dialect.defs.IRCEvent` to dispatch to event handlers.
+     +      event = Parsed `dialect.defs.IRCEvent` to dispatch to event handlers.
      +/
-    package void onEventImpl(const IRCEvent origEvent) @system
+    package void onEventImpl(/*const*/ IRCEvent event) @system
     {
         mixin("static import thisModule = " ~ module_ ~ ";");
 
@@ -362,7 +362,7 @@ mixin template IRCPluginImpl(Flag!"debug_" debug_ = No.debug_,
         /++
          +  Process a function.
          +/
-        Next process(alias fun)(ref IRCEvent event)
+        Next process(alias fun)()
         {
             enum verbose = (isAnnotated!(fun, Verbose) || debug_) ?
                 Yes.verbose :
@@ -956,7 +956,7 @@ mixin template IRCPluginImpl(Flag!"debug_" debug_ = No.debug_,
         alias pluginFuns = Filter!(isNormalPluginFunction, funs);
 
         /// Sanitise and try again once on UTF/Unicode exceptions
-        static void sanitizeEvent(ref IRCEvent event)
+        void sanitizeEvent()
         {
             import std.encoding : sanitize;
 
@@ -971,7 +971,7 @@ mixin template IRCPluginImpl(Flag!"debug_" debug_ = No.debug_,
         }
 
         /// Wrap all the functions in the passed `funlist` in try-catch blocks.
-        void tryProcess(funlist...)(ref IRCEvent event)
+        void tryProcess(funlist...)()
         {
             import core.exception : UnicodeException;
             import std.utf : UTFException;
@@ -980,7 +980,7 @@ mixin template IRCPluginImpl(Flag!"debug_" debug_ = No.debug_,
             {
                 try
                 {
-                    immutable next = process!fun(event);
+                    immutable next = process!fun();
 
                     with (Next)
                     final switch (next)
@@ -990,7 +990,7 @@ mixin template IRCPluginImpl(Flag!"debug_" debug_ = No.debug_,
 
                     case repeat:
                         // only repeat once so we don't endlessly loop
-                        if (process!fun(event) == continue_)
+                        if (process!fun() == continue_)
                         {
                             continue;
                         }
@@ -1008,27 +1008,25 @@ mixin template IRCPluginImpl(Flag!"debug_" debug_ = No.debug_,
                     /*logger.warningf("tryProcess UTFException on %s: %s",
                         __traits(identifier, fun), e.msg);*/
 
-                    sanitizeEvent(event);
-                    process!fun(event);
+                    sanitizeEvent();
+                    process!fun();
                 }
                 catch (UnicodeException e)
                 {
                     /*logger.warningf("tryProcess UnicodeException on %s: %s",
                         __traits(identifier, fun), e.msg);*/
 
-                    sanitizeEvent(event);
-                    process!fun(event);
+                    sanitizeEvent();
+                    process!fun();
                 }
             }
         }
 
-        IRCEvent event = origEvent;  // mutable
-
-        tryProcess!setupFuns(event);
-        tryProcess!earlyFuns(event);
-        tryProcess!pluginFuns(event);
-        tryProcess!lateFuns(event);
-        tryProcess!cleanupFuns(event);
+        tryProcess!setupFuns();
+        tryProcess!earlyFuns();
+        tryProcess!pluginFuns();
+        tryProcess!lateFuns();
+        tryProcess!cleanupFuns();
     }
 
 
