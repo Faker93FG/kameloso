@@ -3,17 +3,17 @@
 set -uexo pipefail
 
 install_deps() {
-    sudo apt update
-    sudo apt install -y apt-transport-https
+    sudo apt-get update
+    sudo apt-get install -y apt-transport-https
 
     sudo wget https://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list \
         -O /etc/apt/sources.list.d/d-apt.list
     sudo apt-get update --allow-insecure-repositories
 
     # fingerprint 0xEBCF975E5BA24D5E
-    sudo apt install -y --allow-unauthenticated --reinstall d-apt-keyring
-    sudo apt update
-    sudo apt install -y --allow-unauthenticated dmd-compiler dub libcurl4-openssl-dev
+    sudo apt-get install -y --allow-unauthenticated --reinstall d-apt-keyring
+    sudo apt-get update --allow-insecure-repositories
+    sudo apt-get install -y --allow-unauthenticated dmd-compiler dub libcurl4-openssl-dev
 
     #git clone https://github.com/zorael/lu.git
     #git clone https://github.com/zorael/dialect.git
