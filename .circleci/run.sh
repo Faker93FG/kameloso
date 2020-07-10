@@ -8,7 +8,7 @@ install_deps() {
 
     sudo wget https://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list \
         -O /etc/apt/sources.list.d/d-apt.list
-    sudo apt update --allow-insecure-repositories
+    sudo apt-get update --allow-insecure-repositories
 
     # fingerprint 0xEBCF975E5BA24D5E
     sudo apt install -y --allow-unauthenticated --reinstall d-apt-keyring
