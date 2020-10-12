@@ -2140,6 +2140,9 @@ abstract class Replay
     /// When this request was issued.
     long when;
 
+    // Whether or not a WHOIS query has been issued for this replay.
+    //bool whoisIssued;
+
     /// Replay the stored event.
     void trigger();
 

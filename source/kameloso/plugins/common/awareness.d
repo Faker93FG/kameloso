@@ -168,6 +168,7 @@ void onMinimalAuthenticationAccountInfoTarget(IRCPlugin plugin, const ref IRCEve
 {
     import kameloso.plugins.common.base : catchUser;
     import kameloso.plugins.common.mixins : Repeater;
+    import std.stdio;
 
     // Catch the user here, before replaying anything.
     plugin.catchUser(event.target);
@@ -180,6 +181,7 @@ void onMinimalAuthenticationAccountInfoTarget(IRCPlugin plugin, const ref IRCEve
     {
         plugin.state.replays.remove(event.target.nickname);
         plugin.state.hasReplays = (plugin.state.replays.length > 0);
+        writeln(plugin.state.replays);
     }
 
     if (!replaysForNickname.length) return;
@@ -192,6 +194,7 @@ void onMinimalAuthenticationAccountInfoTarget(IRCPlugin plugin, const ref IRCEve
 
         if ((event.time - replay.when) <= Timeout.whoisRetry)
         {
+            writeln(plugin.name, " REPEATING");
             repeat(replay);
         }
     }

@@ -117,8 +117,8 @@ configuration "dev" {
         "OmniscientAdmin" \
         "PrintStacktraces" \
         "ExplainRepeat" \
-        "ProfileGC"
-        //"TraceWhois" \
+        "ProfileGC" \
+        "TraceWhois"
 }
 
 configuration "dev-lowmem" {
